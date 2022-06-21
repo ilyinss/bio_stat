@@ -1,14 +1,177 @@
 ---
 title: "automatization_notebook"
-output: word_document
+author: "S. Ilyin"
 date: "`r Sys.Date()`"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
-
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = FALSE, message = FALSE)
 ```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(openxlsx)
+library(readr)
+```
+
+```{r}
+# iris_csv <- read_csv("data/raw/iris_csv.csv")
+# iris_csv2 <- read_csv("data/raw/iris_csv2.csv")
+# iris_txt <- read_delim("data/raw/iris_txt.txt")
+# iris_xlsx <- read_excel("data/raw/iris_xlsx.xlsx", sheet = "iris_csv")
+```
+
+```{r}
+original_data <- read_csv("data/raw/healthcare-dataset-stroke-data.csv")
+original_data
+```
+
+```{r}
+original_data %>% 
+  glimpse()
+```
+
+```{r}
+original_data %>% 
+  mutate(across(where(is.character), as.factor),
+         id = id %>% as.factor,
+         stroke = stroke %>% as.factor) -> data_cleaned
+
+data_cleaned %>% 
+  glimpse()
+```
+
+```{r}
+data_cleaned %>% select(where(is.numeric))
+```
+
+```{r}
+data_cleaned %>% select(!where(is.numeric))
+```
+
+```{r}
+data_cleaned %>% select(starts_with('s'))
+```
+
+```{r}
+data_cleaned %>% select(ends_with('e'))
+```
+
+```{r}
+data_cleaned %>% select(contains('type'))
+```
+
+```{r}
+data_cleaned %>% select(!contains('type'))
+```
+
+```{r}
+data_cleaned %>% select(id, contains('type') & !starts_with('R'))
+```
+
+```{r}
+data_cleaned %>% select(id, contains('type') | where(is.numeric))
+```
+
+```{r}
+data_cleaned %>% 
+  select(where(is.numeric)) %>% 
+  select(function(x) mean(x) > 50)
+```
+
+```{r}
+data_cleaned %>% 
+  select(avg_glucose_level, everything())
+```
+
+```{r}
+data_cleaned %>% 
+  filter(age<=70)
+```
+
+```{r}
+data_cleaned %>% 
+  filter(Residence_type=='Urban')
+```
+
+```{r}
+data_cleaned %>% 
+  filter(Residence_type!='Urban')
+```
+
+```{r}
+data_cleaned %>% 
+  filter(Residence_type!='Urban' & age <= 70)
+```
+
+```{r}
+data_cleaned %>% 
+  filter(between(age, 30, 50))
+```
+
+```{r}
+data_cleaned %>% 
+  filter(between(age, 30, 50) & ever_married == 'Yes')
+```
+
+```{r}
+data_cleaned %>% 
+  filter(between(age, 20, 30) | ever_married == 'No')
+```
+
+```{r}
+data_cleaned %>% 
+  slice(39:400)
+```
+
+```{r}
+data_cleaned %>% 
+  slice(400)
+```
+```{r}
+# abs
+
+data_cleaned %>% 
+  slice_sample(n = 100)
+```
+
+```{r}
+# percent od dataset
+
+data_cleaned %>% 
+  slice_sample(prop = 0.25)
+```
+
+```{r}
+# with rows repeat 
+
+data_cleaned %>% 
+  slice_sample(prop = 0.25, replace = TRUE)
+```
+
+```{r}
+data_cleaned %>% 
+  slice_min(age, with_ties = FALSE)
+```
+
+```{r}
+data_cleaned %>% 
+  slice_max(age, with_ties = FALSE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## R Markdown
 
